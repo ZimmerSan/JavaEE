@@ -2,29 +2,49 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:annotation-config />
+    <context:component-scan base-package="com.tsimura.db"/>
+    <tx:annotation-driven/>
 
-    <bean id="banana" class="com.tsimura.dia.model.impl.Banana"/>
-    <bean id="potato" class="com.tsimura.dia.model.impl.Potato">
-        <constructor-arg value="5"/>
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/JDBC" />
+        <property name="username" value="root" />
+        <property name="password" value="1111" />
+        <property name="initialSize" value="5" />
+        <property name="maxTotal" value="10" />
     </bean>
 
-    <bean id="rob" class="com.tsimura.dia.model.impl.SellerImpl" >
-        <property name="name" value="Rob"/>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+        <constructor-arg ref="dataSource"/>
     </bean>
-    <bean id="bob" class="com.tsimura.dia.model.impl.SellerImpl" autowire-candidate="false"/>
 
-    <bean id="poorStore" class="com.tsimura.dia.model.impl.StoreImpl"/>
-    <bean id="richStore" class="com.tsimura.dia.model.impl.StoreImpl">
-        <property name="name" value="RichStore"/>
-        <property name="products">
-            <set>
-                <ref bean="banana"/>
-                <ref bean="potato"/>
-            </set>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="com.tsimura.db" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
         </property>
-        <property name="cash" value="100500"/>
     </bean>
+
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
+    <bean id="teachersWorker" class="ua.com.kokowka.WorkWithTeacher"/>
+    <bean id="teachersWorker" class="ua.com.kokowka.WorkWithTeacher"/>
+
 </beans>
