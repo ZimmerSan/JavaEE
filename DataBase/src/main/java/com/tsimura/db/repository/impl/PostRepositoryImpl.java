@@ -1,5 +1,6 @@
 package com.tsimura.db.repository.impl;
 
+import com.googlecode.ehcache.annotations.Cacheable;
 import com.tsimura.db.model.Post;
 import com.tsimura.db.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class PostRepositoryImpl implements PostRepository {
         jdbcTemplate.update(SQL_INSERT, post.getTitle(), post.getAuthorId(), post.getContent());
     }
 
+    @Cacheable(cacheName = "postsCache")
     public Post findOne(long id) {
         return jdbcTemplate.queryForObject(SQL_FIND_BY_ID,
                 new RowMapper<Post>() {

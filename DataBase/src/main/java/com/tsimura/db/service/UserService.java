@@ -5,6 +5,8 @@ import com.tsimura.db.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -18,4 +20,9 @@ public class UserService {
     public User findOne(long id){
         return repository.findOne(id);
     }
+
+    List<User> findByUsername(String username){
+        return repository.findByUsername(username);
+    }
+
 }
