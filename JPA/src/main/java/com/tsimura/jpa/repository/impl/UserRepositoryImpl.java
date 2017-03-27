@@ -3,13 +3,11 @@ package com.tsimura.jpa.repository.impl;
 import com.tsimura.jpa.model.User;
 import com.tsimura.jpa.repository.UserRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-@Transactional
 public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
